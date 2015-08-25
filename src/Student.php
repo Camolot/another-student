@@ -55,10 +55,25 @@
 
       function save()
       {
-        $GLOBALS['DB']->exec("INSERT INTO students (name) VALUES('{$this->getName()}', $this->id = $GLOBALS['DB']->lastInsertId()");
+          array_push($_SESSION['list_of_students'], $this);
       }
 
-        // MUST make a get all pass and save pass BEFORE running more tests!!!! good luck! 
+      static function getAll() {
+
+        $returned_students = $GLOBALS['DB']->query("SELECT * FROM students");
+        $students = array();
+        foreach($returned_students as $student) {
+          $name = $student['name'];
+          $enrollment_date = $student['enrollment_date'];
+          $id = $student['id'];
+
+          $new_student = new Student($name, $enrollment_date, $id);
+                array_push($student, $new_student);
+        }
+        return $students;
+      }
+
+        // MUST make a get all pass and save pass BEFORE running more tests!!!! good luck!
   }
 
  ?>

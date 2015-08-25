@@ -13,23 +13,23 @@
     $DB = new PDO($server, $username, $password);
 
     // php unit test
-    class CategoryTest extends PHPUnit_Framework_TestCase
+    class CourseTest extends PHPUnit_Framework_TestCase
     {
 
-        //  tear down
-        // protected function tearDown()
-        // {
-        //    Student::deleteAll();
-        //    Course::deleteAll();
-        // }
 
-    //    getstudent name test in students
+        protected function tearDown()
+        {
+           Student::deleteAll();
+           //Course::deleteAll();
+        }
+
+
         function test_getName()
         {
            //Arrange
            $name = "Chris";
            $enrollment_date = "04-04-04";
-           $id = "5";
+           $id = 5;
            $test_student = new Student ($name, $enrollment_date, $id);
             //Act
            $result = $test_student->getName();
@@ -61,7 +61,7 @@
               $id = 56;
               $test_enrollment_date = new Student ($name, $enrollment_date, $id);
               //Act
-              $result = $test_enrollment_date->getEnrollment_date();
+              $result = $test_enrollment_date->getEnrollmentDate();
               //Assert
               $this->assertEquals($enrollment_date, $result);
           }
@@ -70,48 +70,124 @@
           {
               //Arrange
               $name = "Bob";
-              $enrollment_date = "06-06-06";
-              $id = 57;
-              $test_student = new Student ($name, $enrollment_date, $id);
+              $enrollment_date = "2015-06-06";
+              $id = 1;
+              $test_student = new Student($name, $enrollment_date, $id);
+
+              //Act
               $test_student->save();
+
+              //Assert
+              $result = Student::getAll();
+              $this->assertEquals($test_student, $result[0]);
+          }
+
+          function testGetAll()
+          {
+              //Arrange
+              $name = "Bob";
+              $enrollment_date = "2015-06-06";
+              $id = 1;
+              $test_student = new Student($name, $enrollment_date, $id);
+              $test_student->save();
+
+              $name2 = "John";
+              $enrollment_date2 = "2015-06-06";
+              $id2 = 2;
+              $test_student2 = new Student($name2, $enrollment_date2, $id2);
+              $test_student2->save();
+
               //Act
               $result = Student::getAll();
+
               //Assert
-              $this->assertEquals($test_student, $result[0]);
+              $this->assertEquals([$test_student, $test_student2], $result);
+          }
 
-            }
+          function testDeleteAll()
+          {
+              //Arrange
+              $name = "Bob";
+              $enrollment_date = "2015-06-06";
+              $id = 1;
+              $test_student = new Student($name, $enrollment_date, $id);
+              $test_student->save();
 
+              $name2 = "John";
+              $enrollment_date2 = "2015-06-06";
+              $id2 = 1;
+              $test_student2 = new Student($name2, $enrollment_date2, $id2);
+              $test_student2->save();
 
-         //
-        //  // getstudent course ID test in students
-        //  function test_getCourse_number()
-        //  {
-        //     //Arrange
-        //     $name = "Bob";
-        //     $enrollment_date = "05-05-05";
-        //     $course_number = 23;
-        //     $id = 47;
-        //     $test_course_number = new Student ($name, $enrollment_date, $course_number, $id);
-        //      //Act
-        //     $result = $test_course_number->getCourse_number();
-        //     //Assert
-        //     $this->assertEquals(23, $result);
+              //Act
+              Student::deleteAll();
+              $result = Student::getAll();
+
+              //Assert
+              $this->assertEquals([], $result);
+          }
+
+          function testFind()
+          {
+              //Arrange
+              $name = "Bob";
+              $enrollment_date = "2015-06-06";
+              $id = 1;
+              $test_student = new Student($name, $enrollment_date, $id);
+              $test_student->save();
+
+              $name2 = "John";
+              $enrollment_date2 = "2015-06-06";
+              $id2 = 1;
+              $test_student2 = new Student($name2, $enrollment_date2, $id2);
+              $test_student2->save();
+
+              //Act
+              $result = Student::find($test_student->getId());
+
+              //Assert
+              $this->assertEquals($test_student, $result);
+          }
+
+          function testUpdate()
+          {
+              //Arrange
+              $name = "Bob";
+              $enrollment_date = "2015-06-06";
+              $id = 1;
+              $test_student = new Student($name, $enrollment_date, $id);
+              $test_student->save();
+
+              $new_name = "Billy Bob";
+
+              //Act
+              $test_student->update($new_name);
+
+              //Assert
+              $this->assertEquals("Billy Bob", $test_student->getName());
+          }
+
+        //   function testAddCourse()
+        //   {
+        //       //Arrange
+        //       $name = "Psychology";
+        //       $id = 1;
+        //       $test_student = new Course($name, $id);
+        //       $test_student->save();
+          //
+        //       $name2 = "Rick";
+        //       $enrollment_date = "2015-06-06";
+        //       $id2 = 2;
+        //       $test_student2 = new Student($name2, $enrollment_date, $id2);
+        //       $test_student->save();
+          //
+        //       //Act
+        //       $test_student->addStudent($test_course);
+          //
+        //       //Assert
+        //       $this->assertEquals($test_student->getCourses(), [$test_course]);
         //   }
-         //
-         //
-         //
-
-
-
-
-
-
 
 
      }
-
-
-
-
-
 ?>
